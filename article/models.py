@@ -1,15 +1,13 @@
 from django.db import models
-
+# Django本身具有一个简单又完整的账号系统（User），足以满足一般网站的账号申请、建立、权限、群组等基本功能
+# 因此这里导入内建的User模型，以便使用。
+from django.contrib.auth.models import User
 
 from django.utils import timezone
 
-class User(models.Model):
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=100)
-
 # 博客文章数据类型
 class ArticlePost(models.Model):
-    author = models.ForeignKey("User", on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     body = models.TextField()
     created = models.DateTimeField(default=timezone.now)
