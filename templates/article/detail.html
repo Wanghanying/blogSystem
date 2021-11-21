@@ -17,14 +17,16 @@
         <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
         <div class="col-12 alert alert-success">作者：{{ article.author }}
             <a href="#" onclick="confirm_safe_delete()">删除文章</a>
-            <button
-                style="display: none;"
-                id="safe_delete"
-                action="{% url 'article:article_safe_delete' article.id %}"
-                method="POST"
-                >
-                {% csrf_token %}
-                <button type="submit"发送</button>
+            <a href="{% url "article:article_update" article.id %}">编辑文章</a>
+            <form>
+                <button
+                    style="display: none;"
+                    id="safe_delete"
+                    action="{% url 'article:article_safe_delete' article.id %}"
+                    method="POST">
+                    {% csrf_token %}
+                    <button type="submit">发送</button>
+                </button>
             </form>
 
         </div>
@@ -46,8 +48,6 @@
             content: "确认删除这篇文章吗？",
             // 点击确定按钮后调用的回调函数
             yes: function(index, layero) {
-                // 指定应当前往的 url
-                //location.href='{% url "article:article_delete" article.id %}'
                 $('form#safe_delete button').click()
                 layer.close(index);
 
