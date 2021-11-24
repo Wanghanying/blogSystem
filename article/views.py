@@ -60,6 +60,7 @@ def article_detail(request, id):
                         'markdown.extensions.extra',
                         #语法高亮扩展
                         'markdown.extensions.codehilite',
+                        'markdown.extensions.toc',
                     ])
     # 需要传递给模板的对象
     context = {'article': article}
