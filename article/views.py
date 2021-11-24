@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render
 
 from django.http import HttpResponse
@@ -12,12 +13,29 @@ import markdown
 
 #文章列表
 def article_list(request):
-    if request.GET.get('order') == 'total_views':
-        article_list = ArticlePost.objects.all().order_by('-total_views')
-        order = 'total_views'
+
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+    # 用户搜索逻辑
+    if search:
+        if order == 'total_views':
+            # 用 Q对象 进行联合搜索
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            ).order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
     else:
-        article_list = ArticlePost.objects.all()
-        order = 'normal'
+        # 将 search 参数重置为空
+        search = ''
+        if order == 'total_views':
+            article_list = ArticlePost.objects.all().order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.all()
     # 每页显示 3 篇文章
     paginator = Paginator(article_list, 3)
     # 获取 url 中的页码
@@ -25,7 +43,7 @@ def article_list(request):
     # 将导航对象相应的页码内容返回给 articles
     articles = paginator.get_page(page)
 
-    context = {'articles': articles, 'order': order }
+    context = {'articles': articles, 'order': order, 'search': search}
     return render(request, 'article/list.html', context)
 
 #文章详情
