@@ -2,6 +2,7 @@ from django.db import models
 # Django本身具有一个简单又完整的账号系统（User），足以满足一般网站的账号申请、建立、权限、群组等基本功能
 # 因此这里导入内建的User模型，以便使用。
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from django.utils import timezone
 
@@ -24,6 +25,9 @@ class ArticlePost(models.Model):
     def __str__(self):
         # return self.title 将文章标题返回
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('article:article_detail', args=[self.id])
 
 
 
